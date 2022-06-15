@@ -1,9 +1,45 @@
 <?php
-require('connection.php');
-require "../vendor/autoload.php";
+
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    // error was suppressed with the @-operator
+    if (0 === error_reporting()) {
+        return false;
+    }
+    
+    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+});
+
+require_once('connection.php');
+require_once "../vendor/autoload.php";
 use Firebase\JWT\JWT;
 
 class usuarioDAO extends baseDatos{
+
+	function login($usuario){
+		try{
+			$parms="";
+			$parms.="'".$usuario['correo']."'";
+			$parms.=",'".$usuario['clave']."'";
+			$registro =	$this->saca_registro("CALL login(".$parms.");");
+			$token = $registro->token;
+			$array = array (
+				"status" => true,
+				"data" => array(
+					"token" => $token
+				));
+			return $array;
+			}
+			catch (Exception $e){
+			$array = [
+				"status" => false,
+				"error" => $e->getMessage(),
+				];
+			return $array;
+			}
+	}
+
+
+
     function creaToken($id,$correo, $typeUser){
 		$time = time();
 		$token = array(
@@ -25,6 +61,7 @@ class usuarioDAO extends baseDatos{
 		$typeUser = $registro->tipoUsuario;
         $token = $this->creaToken($id,$correo,$typeUser);
         $this->consulta("CALL insert_token('".$correo."','".$token."')");
+		return $token;
 	} 
 
 }
