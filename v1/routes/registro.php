@@ -25,5 +25,4 @@ include("../controllers/usuarioController.php");
         }
     }
    
-
 ?>

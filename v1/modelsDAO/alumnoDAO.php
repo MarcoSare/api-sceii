@@ -11,6 +11,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 
 require_once('usuarioDAO.php');
 
+
     class alumnoDAO extends usuarioDAO{   
         function registrar($usuario){
             try{
