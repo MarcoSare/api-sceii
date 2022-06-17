@@ -48,6 +48,16 @@ class usuarioDAO extends baseDatos{
 			}
 	}
 
+	function getIdUser($id,$tipoUsuario){
+		try{
+			$registro =	$this->saca_registro("CALL get_id_user('".$id."','".$tipoUsuario."');");
+			return $registro->id;
+			}
+			catch (Exception $e){
+			return null;
+			}
+	}
+
 
 
     function creaToken($id,$correo, $typeUser){

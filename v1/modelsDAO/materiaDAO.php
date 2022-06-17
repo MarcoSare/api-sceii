@@ -18,7 +18,6 @@ require_once('usuarioDAO.php');
             try{
             $usuario = new usuarioDAO(); //getIdTypeUser
             $id_docente  = $usuario->getIdTypeUser($id_usuario);
-            echo "id: ".$id_docente;
             $codigo = $this->getCodigo();
             $parms="";
             $parms.="'".$datos['nombre']."'";
@@ -40,6 +39,86 @@ require_once('usuarioDAO.php');
                     ];
                 return $array;
                 }
+        }
+
+        function borrar($id){
+            try{
+                $this->consulta("CALL delete_materia('".$id."');");
+                $array = array (
+                    "status" => true,
+                    "message" => 'Registro borrado con exito');
+                return $array;
+            }
+            catch(Exception $e){
+                $array = [
+                    "status" => false,
+                    "error" => $e->getMessage(),
+                    ];
+                return $array;
+            }
+        }
+
+        function editar($data){
+            try{
+                $parms="";
+                $parms.="'".$data['id']."'";
+                $parms.=",'".$data['nombre']."'";
+                $parms.=",'".$data['id_semestre']."'";
+                $this->consulta("call edit_materia(".$parms.");");
+                $array = array (
+                    "status" => true,
+                    "message" => 'Registro editado con exito');
+                return $array;
+            }
+            catch(Exception $e){
+                $array = [
+                    "status" => false,
+                    "error" => $e->getMessage(),
+                    ];
+                return $array;
+            }
+        }
+
+        function indexByDocente($id_usuario){
+            try{
+                $usuario = new usuarioDAO(); //getIdTypeUser
+                 $id_docente  = $usuario->getIdTypeUser($id_usuario);
+                $this->consulta("call index_materia_docente('".$id_docente."');");
+                $asoc = $this->get_array_query();
+                
+                $array = array (
+                    "status" => true,
+                    "data" => $asoc);
+                return $array;
+            }
+            catch(Exception $e){
+                $array = [
+                    "status" => false,
+                    "error" => $e->getMessage(),
+                    ];
+                return $array;
+            }
+        }
+
+        function getDocenteByMateria($id){
+            try{
+                $registro = $this->saca_registro("CALL get_docente_by_materia('".$id."');");
+                $usuario = new usuarioDAO(); //getIdTypeUser
+                $id_usuario  = $usuario->getIdUser($registro->id_docente,"docente");
+                $array = array (
+                    "status" => true,
+                    "data" => array(
+                        "id_docente" =>  $id_usuario 
+                    ));
+                    return $array;
+            }
+            catch(Exception $e){
+                $array = [
+                    "status" => false,
+                    "error" => $e->getMessage(),
+                    ];
+                return $array;
+            }
         }
 
         function getCodigo(){

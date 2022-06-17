@@ -23,6 +23,14 @@ class baseDatos{
 		return $this->bloque;
 	}
 
+	function get_array_query(){
+		$arreglo = array();
+		while($row=mysqli_fetch_assoc($this->bloque)){
+			$arreglo[] = $row;
+		}
+		return $arreglo;
+	}
+
 
 	function inserta($query){
 		$this->conecta();

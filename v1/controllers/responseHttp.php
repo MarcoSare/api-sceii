@@ -26,6 +26,20 @@ class responseHttp{
         ];
         echo json_encode($array);
     }
+    function status401($message, $data=null){
+        http_response_code(401);
+        if(isset($data))
+        $array = [
+            "message" => $message,
+            "data" => $data
+        ];
+        
+        else
+        $array = [
+            "message" => $message,
+        ];
+        echo json_encode($array);
+    }
 
 
 }
