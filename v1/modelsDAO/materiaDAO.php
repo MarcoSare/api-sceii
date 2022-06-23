@@ -12,7 +12,26 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 require_once('connection.php');
 require_once('usuarioDAO.php');
 
-    class materiaDAO extends baseDatos{   
+    class materiaDAO extends baseDatos{  
+        
+        function getMateriaById($id_materia){
+            try{
+            $this->consulta("CALL get_materia('".$id_materia."');");
+            $asoc = $this->get_array_query();
+                $array = array (
+                    "status" => true,
+                    "data" => $asoc
+                    );
+                return $array;
+                }
+                catch (Exception $e){
+                $array = [
+                    "status" => false,
+                    "error" => $e->getMessage(),
+                    ];
+                return $array;
+                }
+        }
         
         function crear($datos,$id_usuario){
             try{

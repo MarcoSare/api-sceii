@@ -15,6 +15,7 @@ class baseDatos{
 	}
 
 	function consulta($query){
+		mysqli_report(MYSQLI_REPORT_ALL  ^ MYSQLI_REPORT_INDEX);
 		$this->conecta();
 		$this->bloque = mysqli_query($this->conn, $query);
 		if(strpos(strtoupper($query),"SELECT") !== false)

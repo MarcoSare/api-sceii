@@ -6,7 +6,8 @@ include("../controllers/materiaController.php");
 
     if($_SERVER['REQUEST_METHOD'] == "GET"){
     $materia = new materiaController();
-    $materia->idex_materia_docente();
+    $data = (json_decode(file_get_contents('php://input'),true));
+    $materia->get_materia($data);
     exit;
     }
     if($_SERVER['REQUEST_METHOD'] == "POST"){
