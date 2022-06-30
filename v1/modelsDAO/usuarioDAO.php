@@ -12,6 +12,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 require_once('connection.php');
 require_once "../vendor/autoload.php";
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 class usuarioDAO extends baseDatos{
 
@@ -28,6 +29,39 @@ class usuarioDAO extends baseDatos{
 					"token" => $token
 				));
 			return $array;
+			}
+			catch (Exception $e){
+			$array = [
+				"status" => false,
+				"error" => $e->getMessage(),
+				];
+			return $array;
+			}
+	}
+
+	function dar_alta(){
+		try{
+			$headers = apache_request_headers();
+			if(isset ($headers['Authorization'])){
+				$id = $headers['Authorization'];
+			$registro = $this->saca_registro("CALL alta_cuenta('".$id."');");
+			$nombre = $registro->nombre;
+			$array = array (
+				"status" => true,
+				"data" => array(
+					"nombre" => $nombre
+				)
+				);
+			return $array;
+			}
+			else{
+				$array = [
+					"status" => false,
+					"error" => "Usted no tiene permisos",
+					];
+				return $array;
+
+			}
 			}
 			catch (Exception $e){
 			$array = [
@@ -82,7 +116,12 @@ class usuarioDAO extends baseDatos{
         $token = $this->creaToken($id,$correo,$typeUser);
         $this->consulta("CALL insert_token('".$correo."','".$token."')");
 		return $token;
-	} 
+	}
+	
+	function decode_jwt($token){
+		$jwt_decode = JWT::decode($token, new Key("sceiiv199", 'HS256'));
+		return  $jwt_decode;
+	}
 
 }
 

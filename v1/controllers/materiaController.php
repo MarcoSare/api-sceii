@@ -70,8 +70,6 @@ require_once('responseHttp.php');
             $this->status400($e->getMessage());
             exit;
         }
-
-            
         }
 
         function borra_materia($data){
