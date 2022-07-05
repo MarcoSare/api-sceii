@@ -43,7 +43,11 @@ class usuarioDAO extends baseDatos{
 		try{
 			$headers = apache_request_headers();
 			if(isset ($headers['Authorization'])){
-				$id = $headers['Authorization'];
+			$token = $headers['Authorization'];
+			$jwt_decode = $this->decode_jwt($token);
+			$array = json_decode(json_encode($jwt_decode, true),true);
+			$id = $array['data']['id'];
+			
 			$registro = $this->saca_registro("CALL alta_cuenta('".$id."');");
 			$nombre = $registro->nombre;
 			$array = array (
@@ -62,6 +66,62 @@ class usuarioDAO extends baseDatos{
 				return $array;
 
 			}
+			}
+			catch (Exception $e){
+			$array = [
+				"status" => false,
+				"error" => $e->getMessage(),
+				];
+			return $array;
+			}
+	}
+
+
+	function getCodigoForgetPass($data){
+		try{
+			$codigo = $this->getCodigo();
+			$this->consulta("CALL get_codigo_forget_pass('".$data['correo']."','".$codigo."');");
+			$array = array (
+				"status" => true,
+				"data" => array(
+					"codigo" => $codigo
+				)
+				);
+			return $array;
+			}
+			catch (Exception $e){
+			$array = [
+				"status" => false,
+				"error" => $e->getMessage(),
+				];
+			return $array;
+			}
+	}
+
+	function veriCodigoForgetPass($data){
+		try{
+			$this->consulta("CALL veri_codigo_forget_pass('".$data['correo']."','".$data['codigo']."');");
+			$array = array (
+				"status" => true,
+				);
+			return $array;
+			}
+			catch (Exception $e){
+			$array = [
+				"status" => false,
+				"error" => $e->getMessage(),
+				];
+			return $array;
+			}
+	}
+
+	function cambiaPassword($data){
+		try{
+			$this->consulta("CALL cambia_password('".$data['correo']."','".$data['clave']."');");
+			$array = array (
+				"status" => true,
+				);
+			return $array;
 			}
 			catch (Exception $e){
 			$array = [
@@ -107,6 +167,13 @@ class usuarioDAO extends baseDatos{
 			);
 			$jwt = JWT::encode($token,"sceiiv199","HS256");
 			return $jwt;
+	}
+
+	function getCodigo(){
+		$codigo="";
+		for($i=0;4>$i;$i++)
+		$codigo.=chr(rand(48,57)); //numero del 0 al 9	
+		return $codigo;
 	}
 	
 	function insertToken($correo){

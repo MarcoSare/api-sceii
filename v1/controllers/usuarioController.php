@@ -52,6 +52,41 @@ require('responseHttp.php');
                }
         }
 
+        function getCodigoForgetPass($data){
+            $usuario = new alumnoDAO();//usamos el objeto alumno para logear ya que hereda de usuario y puede acceder a eso metodos
+            $status = $usuario->getCodigoForgetPass($data);
+            if($status["status"]===true){
+                $this->enviar_codigo_pass($data,$status['data']['codigo']);
+                $this->status201("Codigo enviado exitosamente", $status["data"]);
+               }
+               else{
+                $this->status400($status["error"]);
+               }
+        }
+
+        function veriCodigoForgetPass($data){
+            $usuario = new alumnoDAO();//usamos el objeto alumno para logear ya que hereda de usuario y puede acceder a eso metodos
+            $status = $usuario->veriCodigoForgetPass($data);
+            if($status["status"]===true){
+                $this->status201("Confirmacion exitosamente");
+               }
+               else{
+                $this->status400($status["error"]);
+               }
+        }
+
+        function cambiaPassword($data){
+            $usuario = new alumnoDAO();//usamos el objeto alumno para logear ya que hereda de usuario y puede acceder a eso metodos
+            $status = $usuario->cambiaPassword($data);
+            if($status["status"]===true){
+                $this->status201("Password actualizada exitosamente");
+               }
+               else{
+                $this->status400($status["error"]);
+               }
+        }
+        
+
         function dar_alta(){
             $usuario = new alumnoDAO();//usamos el objeto alumno para logear ya que hereda de usuario y puede acceder a eso metodos
             $status = $usuario->dar_alta();
@@ -82,6 +117,16 @@ require('responseHttp.php');
             $token = $usuario->creaToken($id,"","");
             $link="https://sceii.000webhostapp.com/SCEII_WEB/php/registro/confirm.php?user=".$token;
             $email->enviar_confirmacion($link,$data['nombre'],$data['apellidos'],$data['correo']);
+        }
+
+
+        function enviar_codigo_pass($data, $codigo){
+            $usuario = new alumnoDAO();
+            $registro = $usuario->saca_registro("select nombre, apellidos from usuario where correo = '".$data['correo']."'");
+            $nombre = $registro->nombre;
+            $apellidos = $registro->apellidos;
+            $email = new model_usuario();
+            $email->enviarCodigoPass($codigo,$nombre,$apellidos,$data['correo']);
         }
 
         
