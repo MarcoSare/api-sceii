@@ -21,13 +21,11 @@ class usuarioDAO extends baseDatos{
 			$parms="";
 			$parms.="'".$usuario['correo']."'";
 			$parms.=",'".$usuario['clave']."'";
-			$registro =	$this->saca_registro("CALL login(".$parms.");");
-			$token = $registro->token;
+			$this->consulta("CALL login(".$parms.");");
+			$asoc = $this->get_array_query();
 			$array = array (
 				"status" => true,
-				"data" => array(
-					"token" => $token
-				));
+				"data" => $asoc);
 			return $array;
 			}
 			catch (Exception $e){
@@ -74,6 +72,52 @@ class usuarioDAO extends baseDatos{
 				];
 			return $array;
 			}
+	}
+
+
+	function editUsuario($data, $id){
+		try{
+			$parms="";
+			$parms.="'".$id."'";
+			$parms.=",'".$data['nombre']."'";
+            $parms.=",'".$data['apellidos']."'";
+            $parms.=",'".$data['clave']."'";
+            $parms.=",'".$data['genero']."'";
+            $parms.=",'".$data['fecha_nacimiento']."'";
+			$parms.=",'".$data['foto_perfil']."'";
+			$this->consulta("CALL edit_usuario(".$parms.");");
+			$array = array (
+				"status" => true,
+			);
+			return $array;
+			}
+			catch (Exception $e){
+			$array = [
+				"status" => false,
+				"error" => $e->getMessage(),
+				];
+			return $array;
+			}
+
+	}
+	function getUsuario($id){
+		try{
+			$this->consulta("CALL get_usuario(".$id.");");
+			$asoc = $this->get_array_query();
+			$array = array (
+				"status" => true,
+				"data" => $asoc 
+			);
+			return $array;
+			}
+			catch (Exception $e){
+			$array = [
+				"status" => false,
+				"error" => $e->getMessage(),
+				];
+			return $array;
+			}
+
 	}
 
 

@@ -11,8 +11,10 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 include_once('../modelsDAO/alumnoDAO.php');
 include_once('../modelsDAO/docenteDAO.php');
 include_once('../modelsDAO/visitanteDAO.php');
+include_once('../modelsDAO/jefe_laboratorioDAO.php');
+include_once('../authorization/authorization.php');
 include_once('../models/usuario.php');
-require('responseHttp.php');
+require_once('responseHttp.php');
 
     class usuarioController extends responseHttp{
 
@@ -21,6 +23,17 @@ require('responseHttp.php');
            $status = $alumno->registrar($data);
            if($status["status"]===true){
             $this->enviar_confirmacion($data);
+            $this->status201("Registro exitoso", $status["data"]);
+           }
+           else{
+            $this->status400($status["error"]);
+           }
+        }
+
+        function registro_jefe_laboratorio($data){
+            $jefe_laboratorio = new jefe_laboratorioDAO();
+           $status = $jefe_laboratorio->registrar($data);
+           if($status["status"]===true){
             $this->status201("Registro exitoso", $status["data"]);
            }
            else{
@@ -103,6 +116,32 @@ require('responseHttp.php');
             $status = $usuario->login($data);
             if($status["status"]===true){
                 $this->status201("Login exitoso", $status["data"]);
+               }
+               else{
+                $this->status400($status["error"]);
+               }
+        }
+
+        function editUsuario($data){
+            $auth = new authorization();
+            $usuario = new alumnoDAO();
+            $token_data = $auth->authorizationByToken();
+            $status = $usuario->editUsuario($data, $token_data['data']['id']);
+            if($status["status"]===true){
+                $this->status201("Datos actualizado correctamente");
+               }
+               else{
+                $this->status400($status["error"]);
+               }
+        }
+
+        function getUsuario(){
+            $auth = new authorization();
+            $usuario = new alumnoDAO();
+            $token_data = $auth->authorizationByToken();
+            $status = $usuario->getUsuario($token_data['data']['id']);
+            if($status["status"]===true){
+                $this->status201("exito",$status["data"]);
                }
                else{
                 $this->status400($status["error"]);

@@ -31,12 +31,37 @@ class responseHttp{
         if(isset($data))
         $array = [
             "message" => $message,
+            "satus" => "Error",
+            "code" =>  "401",
             "data" => $data
         ];
         
         else
         $array = [
             "message" => $message,
+            "satus" => "Error",
+            "code" =>  "401"
+
+        ];
+        echo json_encode($array); 
+    }
+
+    function status500($message, $data=null){
+        http_response_code(401);
+        if(isset($data))
+        $array = [
+            "message" => $message,
+            "satus" => "Error",
+            "code" =>  "500",
+            "data" => $data
+        ];
+        
+        else
+        $array = [
+            "message" => $message,
+            "satus" => "Error",
+            "code" =>  "500"
+
         ];
         echo json_encode($array);
     }

@@ -18,7 +18,10 @@ include_once "../vendor/autoload.php";
         function authorizationByTypeUSer($tipoUsuario){
             try{
                 $headers = apache_request_headers();
+                if(isset($headers['Authorization']))
                 $token = $headers['Authorization'];
+                else
+                $token = $headers['authorization'];
                 $this->consulta("CALL veri_token('".$token."');");
                 $jwt_decode = $this->decode_jwt($token);
                 $array = json_decode(json_encode($jwt_decode, true),true);
@@ -26,13 +29,13 @@ include_once "../vendor/autoload.php";
                     return $array;
                     else{
                         $http = new responseHttp();
-                        $http->status401('Usted no tiene permisos');
+                        $http->status401('Error ustede no tiene authorización');
                         exit;
                     }
             }
             catch(Exception $e){
                 $http = new responseHttp();
-                $http->status401('Usted no tiene permisos');
+                $http->status500("Ha ocurrido un error en el sevidor");
                 exit;
             }
 
@@ -41,7 +44,10 @@ include_once "../vendor/autoload.php";
         function authorizationById($id){
             try{
                 $headers = apache_request_headers();
+                if(isset($headers['Authorization']))
                 $token = $headers['Authorization'];
+                else
+                $token = $headers['authorization'];
                 $this->consulta("CALL veri_token('".$token."');");
                 $jwt_decode = $this->decode_jwt($token);
                 $array = json_decode(json_encode($jwt_decode, true),true);
@@ -50,16 +56,42 @@ include_once "../vendor/autoload.php";
                     return $array;
                     else{
                         $http = new responseHttp();
-                        $http->status401('Usted no tiene permisos');
+                        $http->status401('Error ustede no tiene authorización');
                         exit;
                     }
             }
             catch(Exception $e){
                 $http = new responseHttp();
-                $http->status401('Usted no tiene permisos');
+                $http->status500("Ha ocurrido un error en el sevidor");
                 exit;
             }
 
+        }
+
+        function authorizationBytoken(){
+            try{
+                $headers = apache_request_headers();
+                if(isset($headers['Authorization']))
+                $token = $headers['Authorization'];
+                else
+                $token = $headers['authorization'];
+                $this->consulta("CALL veri_token('".$token."');");
+                $jwt_decode = $this->decode_jwt($token);
+                $array = json_decode(json_encode($jwt_decode, true),true);
+                
+                    if(isset($array['data']['id']))
+                    return $array;
+                    else{
+                        $http = new responseHttp();
+                        $http->status401('Error ustede no tiene authorización');
+                        exit;
+                    }
+            }
+            catch(Exception $e){
+                $http = new responseHttp();
+                $http->status500("Ha ocurrido un error en el sevidor");
+                exit;
+            }
         }
 
 
