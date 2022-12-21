@@ -7,6 +7,12 @@ include("../controllers/usuarioController.php");
 
     if($_SERVER['REQUEST_METHOD'] == "POST"){
         $tipoUsuario = $_REQUEST['tipo'];
+        if($tipoUsuario == "jefe_laboratorio"){
+            $usuario = new usuarioController();
+            $data = (json_decode(file_get_contents('php://input'),true));
+            $usuario->registro_jefe_laboratorio($data);
+            exit;
+        }
         if($tipoUsuario == "alumno"){
         $usuario = new usuarioController();
         $data = (json_decode(file_get_contents('php://input'),true));
