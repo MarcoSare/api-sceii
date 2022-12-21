@@ -69,7 +69,7 @@ include_once "../vendor/autoload.php";
         }
         catch(Exception $e){
             $http = new responseHttp();
-            $http->status500("no se ha subido la imagen al servidor");
+            $http->status500("no se ha subido la imagen al servidor". $e);
             exit;
         }
     }

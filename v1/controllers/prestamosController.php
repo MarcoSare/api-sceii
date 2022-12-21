@@ -20,7 +20,7 @@ require_once('responseHttp.php');
             $prestamo = new prestamosDAO();
            $status = $prestamo->addPrestamo($data);
            if($status["status"]===true){
-            $this->status201("Registro exitoso",);
+            $this->status201("Registro exitoso");
            }
            else{
             $this->status400($status["error"]);

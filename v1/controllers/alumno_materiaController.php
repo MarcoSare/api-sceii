@@ -55,7 +55,7 @@ require_once('responseHttp.php');
         function indexByAlumno(){
             try{
             $auth = new authorization();
-            $token_data = $auth->authorizationByTypeUSer("alumno");
+            $token_data = $auth->authorizationBytoken();
             $aluMat = new alumno_materiaDAO();
             $status = $aluMat->indexByAlumno($token_data['data']['id']);
             if($status["status"]===true){

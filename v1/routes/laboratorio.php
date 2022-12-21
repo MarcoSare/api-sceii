@@ -11,6 +11,25 @@ include("../controllers/laboratorioController.php");
         $laboratorio->crea_laboratorio($data);
         exit;
     }
+
+    if($_SERVER['REQUEST_METHOD'] == "GET"){
+        $laboratorio = new laboratorioController();
+      
+
+        if(isset($_REQUEST['id'])){
+            $id = $_REQUEST['id'];
+            $laboratorio->get_laboratorio($id);
+            exit;
+        }
+
+        if(isset($_REQUEST['codigo_acceso'])){
+            $codigo_acceso = $_REQUEST['codigo_acceso'];
+            $laboratorio->get_laboratorio_cod_acc($codigo_acceso);
+            exit;
+        }
+        
+        
+    }
     
    
 ?>

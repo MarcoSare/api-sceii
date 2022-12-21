@@ -134,6 +134,18 @@ require_once('responseHttp.php');
                 $this->status400($status["error"]);
                }
         }
+        function deleteUsuario($data){
+            $auth = new authorization();
+            $usuario = new alumnoDAO();
+            $token_data = $auth->authorizationByToken();
+            $status = $usuario->deleteUsuario($data, $token_data['data']['id']);
+            if($status["status"]===true){
+                $this->status201("Su cuenta ha sido eliminada correctamente");
+               }
+               else{
+                $this->status400($status["error"]);
+               }
+        }
 
         function getUsuario(){
             $auth = new authorization();
@@ -154,7 +166,7 @@ require_once('responseHttp.php');
             $id = $registro->id;
             $email = new model_usuario();
             $token = $usuario->creaToken($id,"","");
-            $link="https://sceii.000webhostapp.com/SCEII_WEB/php/registro/confirm.php?user=".$token;
+            $link="https://labmanufactura.net/SCEII/confirmarCuenta/".$token;
             $email->enviar_confirmacion($link,$data['nombre'],$data['apellidos'],$data['correo']);
         }
 

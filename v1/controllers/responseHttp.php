@@ -43,7 +43,7 @@ class responseHttp{
             "code" =>  "401"
 
         ];
-        echo json_encode($array); 
+        echo json_encode($array);
     }
 
     function status500($message, $data=null){

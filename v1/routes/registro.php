@@ -31,6 +31,12 @@ include("../controllers/usuarioController.php");
             $usuario->registro_visitante($data);
             exit;
         }
+         if($tipoUsuario == "alta"){
+             $usuario = new usuarioController();
+            $usuario->dar_alta();
+            exit;
+        }
+        
     }else
     if($_SERVER['REQUEST_METHOD'] == "PATCH"){
             $usuario = new usuarioController();

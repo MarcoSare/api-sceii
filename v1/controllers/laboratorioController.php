@@ -34,6 +34,41 @@ require_once('responseHttp.php');
         }
         }
 
+
+        function get_laboratorio($id){
+            try{
+            $laboratorio = new laboratorioDAO();
+           $status = $laboratorio->get_laboratorio($id);
+           if($status["status"]===true){
+            $this->status201("exito", $status["data"]);
+           }
+           else{
+            $this->status400($status["error"]);
+           }
+        }
+        catch(Exception $e){
+            $this->status400($e->getMessage());
+            exit;
+        }
+        }
+
+        function get_laboratorio_cod_acc($id){
+            try{
+            $laboratorio = new laboratorioDAO();
+           $status = $laboratorio->get_laboratorio_cod_acc($id);
+           if($status["status"]===true){
+            $this->status201("exito", $status["data"]);
+           }
+           else{
+            $this->status400($status["error"]);
+           }
+        }
+        catch(Exception $e){
+            $this->status400($e->getMessage());
+            exit;
+        }
+        }
+
         function borra_materia($data){
             try{
                 $materia = new materiaDAO();
@@ -84,6 +119,9 @@ require_once('responseHttp.php');
             exit;
         }
         }
+
+
+        
 
         
 

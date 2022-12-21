@@ -40,8 +40,19 @@ class usuarioDAO extends baseDatos{
 	function dar_alta(){
 		try{
 			$headers = apache_request_headers();
-			if(isset ($headers['Authorization'])){
-			$token = $headers['Authorization'];
+			$token = "";
+                if(isset($headers['Authorization']))
+                $token = $headers['Authorization'];
+                if(isset($headers['authorization']))
+                $token = $headers['authorization'];
+                if($token===""){
+				$array = [
+					"status" => false,
+					"error" => "Usted no tiene permisos",
+					];
+				return $array;
+
+			}
 			$jwt_decode = $this->decode_jwt($token);
 			$array = json_decode(json_encode($jwt_decode, true),true);
 			$id = $array['data']['id'];
@@ -55,15 +66,8 @@ class usuarioDAO extends baseDatos{
 				)
 				);
 			return $array;
-			}
-			else{
-				$array = [
-					"status" => false,
-					"error" => "Usted no tiene permisos",
-					];
-				return $array;
-
-			}
+			
+			
 			}
 			catch (Exception $e){
 			$array = [
@@ -75,6 +79,7 @@ class usuarioDAO extends baseDatos{
 	}
 
 
+    
 	function editUsuario($data, $id){
 		try{
 			$parms="";
@@ -85,6 +90,7 @@ class usuarioDAO extends baseDatos{
             $parms.=",'".$data['genero']."'";
             $parms.=",'".$data['fecha_nacimiento']."'";
 			$parms.=",'".$data['foto_perfil']."'";
+			$parms.=",'".$data['claveConfirm']."'";
 			$this->consulta("CALL edit_usuario(".$parms.");");
 			$array = array (
 				"status" => true,
@@ -100,6 +106,28 @@ class usuarioDAO extends baseDatos{
 			}
 
 	}
+
+	function deleteUsuario($data, $id){
+		try{
+			$parms="";
+			$parms.="'".$id."'";
+			$parms.=",'".$data['claveConfirm']."'";
+			$this->consulta("CALL delete_usuario(".$parms.");");
+			$array = array (
+				"status" => true,
+			);
+			return $array;
+			}
+			catch (Exception $e){
+			$array = [
+				"status" => false,
+				"error" => $e->getMessage(),
+				];
+			return $array;
+			}
+
+	}
+
 	function getUsuario($id){
 		try{
 			$this->consulta("CALL get_usuario(".$id.");");
@@ -111,6 +139,7 @@ class usuarioDAO extends baseDatos{
 			return $array;
 			}
 			catch (Exception $e){
+			    echo($e);
 			$array = [
 				"status" => false,
 				"error" => $e->getMessage(),

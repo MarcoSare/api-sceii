@@ -15,11 +15,30 @@ require_once('responseHttp.php');
         function indexByAlumno(){
             try{
             $auth = new authorization();
-            $token_data = $auth->authorizationByTypeUSer("alumno");
+            $token_data = $auth->authorizationBytoken();
             $aluLab = new alumno_laboratorioDAO();
             $status = $aluLab->indexByAlumno($token_data['data']['id']);
             if($status["status"]===true){
                 $this->status201("exito", $status["data"]);
+               }
+               else{
+                $this->status400($status["error"]);
+               }
+            }
+            catch(Exception $e){
+                $this->status400($e->getMessage());
+            exit;
+            }
+        }
+
+        function inscribir($data){
+            try{
+            $auth = new authorization();
+            $token_data = $auth->authorizationByTypeUSer("alumno");
+            $aluMat = new alumno_laboratorioDAO();
+            $status = $aluMat->inscribir($data,$token_data['data']['id']);
+            if($status["status"]===true){
+                $this->status201("Laboratorio Inscrito con éxito");
                }
                else{
                 $this->status400($status["error"]);

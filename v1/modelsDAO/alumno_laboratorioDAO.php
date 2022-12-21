@@ -32,6 +32,26 @@ require_once('usuarioDAO.php');
                 return $array;
             }
         }
+
+        function  inscribir($data,$id_usuario){
+            try{
+               
+                $usuario = new usuarioDAO(); //getIdTypeUser
+                $id_alumno  = $usuario->getIdTypeUser($id_usuario);
+                $this->consulta("call inscribir_laboratorio('".$id_alumno."','".$data['codigo']."');");
+                $array = array (
+                    "status" => true,
+                    "message" => 'Labotario Incrito con éxito');
+                return $array;
+            }
+            catch(Exception $e){
+                $array = [
+                    "status" => false,
+                    "error" => $e->getMessage(),
+                    ];
+                return $array;
+            }
+        }
     }
     
     
