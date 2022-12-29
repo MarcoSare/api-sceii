@@ -10,10 +10,13 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 
 include_once("../resources/class.phpmailer.php");
 include_once("../resources/class.smtp.php");
+include_once('plantilla.php');
 class model_usuario{
     function enviar_confirmacion($link,$nombre,$apellidos,$correo){
         $mail = new PHPMailer();
+        $plantilla = new plantilla_mail();
     $mail->IsSMTP();
+    $mail->CharSet = 'UTF-8';
     $mail->Host="smtp.gmail.com"; //mail.google
     $mail->SMTPSecure = 'ssl'; // secure transfer enabled REQUIRED for GMail
     $mail->Port = 465;     // set the SMTP port for the GMAIL server
@@ -26,9 +29,9 @@ class model_usuario{
     $mail->Password = "okqrjsltakrujeuj";  // SMTP account password
       
     $mail->From="sceii.itcelaya@gmail.com";
-    $mail->FromName="Sistema de control academico de ingeniería Industrial";
+    $mail->FromName=utf8_encode("Sistema de Control Estudiantil de Ingeniería Industrial");
     $mail->Subject = "Registro completo";
-    $mail->MsgHTML("<h1>BIENVENIDO ".$nombre." ".$apellidos."</h1><h2> Accede al siguiente link para dar de alta tu cuenta : ".$link."</h2>");
+    $mail->MsgHTML($plantilla-> get_plantilla(($nombre.' '.$apellidos), $link));
     $mail->AddAddress($correo);
     //$mail->AddAddress("admin@admin.com");
     if (!$mail->Send()) 
